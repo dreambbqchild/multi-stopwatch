@@ -1,0 +1,75 @@
+html, body {margin: 0; padding: 0; background-color: rgb(53, 56, 62);}
+html, body, button {color: white;font-size: 14pt;font-family: 'IBM Plex Sans';}
+
+* {box-sizing: border-box;}
+
+.align-items-center { align-items: center; }
+
+.bg-blue {background-color: rgb(28, 33, 124);}
+.bg-green {background-color: rgb(31, 124, 28);}
+.bg-red {background-color: rgb(124, 28, 28);}
+
+.flex {display: flex;}
+.flex-direction-column {flex-direction: column;}
+.flex-direction-row {flex-direction: row;}
+.flex-grow-1 {flex-grow: 1;}
+
+.font-weight-bold {font-weight: bold;}
+
+.h-100 {height:100%;}
+
+.inset-text-shadow {text-shadow: -1px -1px 0px black}
+
+.margin-1em {margin: 1em;}
+.padding-1em {padding: 1em;} 
+
+.justify-content-center {justify-content: center;}
+
+.table-layout-fixed {table-layout: fixed;}
+
+.text-align-center {text-align: center;}
+.text-align-right {text-align: right;}
+
+.user-select-none {user-select: none;}
+
+.w-100 {width: 100%;}
+
+a {
+    text-decoration: none;
+    color: white;
+    font-weight: 900;
+}
+
+current-stopwatch {
+    font-size: 3em;
+}
+
+element-ladder, main-element, stopwatch-tracker {display: block;}
+
+stopwatch-tracker {    
+    .current {height: 0px; overflow: hidden; transition: height 0.5s ease-in-out;}
+    
+    &.is-active {
+        background-color: rgb(11, 131, 37);
+        .current {height:1.25em}
+    }
+}
+
+element-ladder {
+    
+    > div {position: relative;}
+
+    .splitter-bottom, .splitter-top {
+        height: 8px;    
+        width: 100%;
+        background-repeat: repeat-x;
+        position: absolute;
+    }
+    
+    .splitter-bottom { background-image: url("splitter-bottom.svg"); bottom:0px;}
+    .splitter-top { background-image: url("splitter-top.svg"); top:0px;}
+}
+
+p {
+    margin: 0.25em 0em;
+}
