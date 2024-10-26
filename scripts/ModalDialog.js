@@ -59,6 +59,7 @@ class ModalDialog extends HTMLElement {
 
             this.#close();
         });
+        
         this.#cmdCancel.addEventListener('click', () => this.#close());
     }
 }

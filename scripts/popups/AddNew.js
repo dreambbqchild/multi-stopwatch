@@ -1,11 +1,12 @@
-import { TimeSpanCollection } from "../models/TimeSpan.js";
 import StorageService from "../services/StorageService.js";
 
 class AddNew extends HTMLElement {
     #input = null;
 
     onOk() {
-        StorageService.save({key: this.#input.value, value: new TimeSpanCollection()})      
+        const kvp = {key: this.#input.value, value: []};
+        StorageService.save(kvp);
+        document.querySelector('main-element').newStopwatch(kvp);
     }
 
     connectedCallback(){
