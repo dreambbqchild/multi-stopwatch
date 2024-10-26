@@ -1,4 +1,5 @@
-import {TimeSpan, TimeSpanCollection} from "../TimeSpan.js";
+import {TimeSpanCollection} from "./models/TimeSpan.js";
+import StorageService from "./services/StorageService.js";
 
 class StopwatchTracker extends HTMLElement {
     static observedAttributes = ['label-for'];
@@ -7,11 +8,16 @@ class StopwatchTracker extends HTMLElement {
     #totalElapsed = null;
     #label = null;
     #hInterval = null;
-    
-    timespans = new TimeSpanCollection();
+    #timespans = new TimeSpanCollection();
 
-    get isActive() {return this.timespans.isActive;}
-    get topValue() {return this.timespans.topValue;}
+    get timespans() {return this.#timespans;}
+    set timespans(value) {
+        this.#timespans = new TimeSpanCollection(value);
+        this.#paint();
+    }
+
+    get isActive() {return this.#timespans.isActive;}
+    get topValue() {return this.#timespans.topValue;}
 
     get labelFor() {return this.getAttribute('label-for');}
     set labelFor(value) {this.setAttribute('label-for', value);}
@@ -19,23 +25,29 @@ class StopwatchTracker extends HTMLElement {
     start() {
         this.#currentElapsed.textContent = '00:00:00';
         
-        this.timespans.startNew();
+        this.#timespans.startNew();
         this.classList.add('is-active');
-        
         this.#hInterval = setInterval(() => this.#paint(), 1000);
+
+        StorageService.save({key: this.labelFor, value: this.#timespans});
     }
 
     stop() {
-        this.timespans.stop();        
+        this.#timespans.stop();
         this.classList.remove('is-active');
         clearInterval(this.#hInterval);
         this.#hInterval = null;
+
+        StorageService.save({key: this.labelFor, value: this.#timespans});
     }
 
-    #paint() {        
-        this.#totalElapsed.textContent = this.timespans;
+    #paint() {
+        if(!this.#totalElapsed)
+            return;
+
+        this.#totalElapsed.textContent = this.#timespans;
         if(this.isActive)
-            this.#currentElapsed.textContent = this.timespans.topValue;
+            this.#currentElapsed.textContent = this.#timespans.topValue;
     }
 
     connectedCallback() {
@@ -53,6 +65,8 @@ class StopwatchTracker extends HTMLElement {
         this.#totalElapsed = this.querySelector(".total-elapsed");        
 
         this.#label.textContent = this.labelFor;
+
+        this.#paint();
     }
 
     attributeChangedCallback(name, _, newValue) {        

@@ -18,8 +18,21 @@ class TimeSpan {
     #end
 
     constructor(start, end) {
-        this.#start = start ?? new Date();
-        this.#end = end;
+        const resolveDate = (v) => {
+            if(v === undefined || v === null)
+                return new Date();
+
+            if(typeof(start) === 'number')
+                return new Date(v);
+
+            if(start.constructor === Date)
+                return v;
+
+            return new Date();
+        }
+
+        this.#start = resolveDate(start);
+        this.#end = resolveDate(end);
     }
 
     get start() {return new Date(this.#start);}
@@ -38,8 +51,8 @@ class TimeSpan {
     }
 
     valueOf() {
-        const end = this.end ?? new Date();
-        return Math.floor((end.getTime() - this.start.getTime()) / 1000);
+        const end = this.#end ?? new Date();
+        return Math.floor((end.getTime() - this.#start.getTime()) / 1000);
     }
 
     toString() {
@@ -57,7 +70,7 @@ class TimeSpanCollection {
 
     constructor(arr = null) {
         if(arr)
-            this.#timeSpans = arr;
+            this.#timeSpans = arr.map(item => new TimeSpan(item.start, item.end));
 
         this.#sum = this.#timeSpans.reduce((sum, current) => sum + current, 0);
     }

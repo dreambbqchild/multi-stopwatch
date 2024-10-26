@@ -1,12 +1,22 @@
-html, body {margin: 0; padding: 0; background-color: rgb(53, 56, 62);}
-html, body, button {color: white;font-size: 14pt;font-family: 'IBM Plex Sans';}
+:root {
+    --green-color: rgb(31, 124, 28);
+    --background-gray: rgb(53, 56, 62);
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+  
+html, body {margin: 0; padding: 0; background-color: var(--background-gray);}
+html, body, button, input {color: white; font-size: 14pt; font-family: 'IBM Plex Sans';}
 
 * {box-sizing: border-box;}
 
 .align-items-center { align-items: center; }
 
 .bg-blue {background-color: rgb(28, 33, 124);}
-.bg-green {background-color: rgb(31, 124, 28);}
+.bg-green {background-color: var(--green-color);}
 .bg-red {background-color: rgb(124, 28, 28);}
 
 .flex {display: flex;}
@@ -21,7 +31,38 @@ html, body, button {color: white;font-size: 14pt;font-family: 'IBM Plex Sans';}
 .inset-text-shadow {text-shadow: -1px -1px 0px black}
 
 .margin-1em {margin: 1em;}
+
+.modal {
+    position: fixed;
+    z-index: 100;
+    background-color: var(--background-gray);
+    border-radius: 1em;
+    padding: 1em;
+    box-shadow: 0px 5px 5px rgba(1, 1, 1, 0.75);
+}
+
+.overlay {
+    z-index: 99;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.66);
+    display: none;
+    opacity: 0;
+
+    &.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.25s; 
+        opacity: 1;
+    }
+}
+
 .padding-1em {padding: 1em;} 
+.padding-right-1em {padding-right: 1em;}
 
 .justify-content-center {justify-content: center;}
 
@@ -33,6 +74,7 @@ html, body, button {color: white;font-size: 14pt;font-family: 'IBM Plex Sans';}
 .user-select-none {user-select: none;}
 
 .w-100 {width: 100%;}
+.w-50 {width: 50%;}
 
 a {
     text-decoration: none;
@@ -45,15 +87,6 @@ current-stopwatch {
 }
 
 element-ladder, main-element, stopwatch-tracker {display: block;}
-
-stopwatch-tracker {    
-    .current {height: 0px; overflow: hidden; transition: height 0.5s ease-in-out;}
-    
-    &.is-active {
-        background-color: rgb(11, 131, 37);
-        .current {height:1.25em}
-    }
-}
 
 element-ladder {
     
@@ -70,6 +103,18 @@ element-ladder {
     .splitter-top { background-image: url("splitter-top.svg"); top:0px;}
 }
 
+input {border:none; border-bottom: solid black 1px; background-color: rgb(31, 33, 35);}
+input:focus {outline: none;}
+
 p {
     margin: 0.25em 0em;
+}
+
+stopwatch-tracker {    
+    .current {height: 0px; overflow: hidden; transition: height 0.5s ease-in-out;}
+    
+    &.is-active {
+        background-color: var(--green-color);
+        .current {height:1.25em}
+    }
 }
