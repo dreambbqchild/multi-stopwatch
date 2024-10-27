@@ -1,19 +1,15 @@
-import StorageService from "../services/StorageService.js";
+import { TimeSpanCollection } from "../models/TimeSpan.js";
+import StopwatchService from "../services/StopwatchService.js";
 
 class AddNew extends HTMLElement {
     #input = null;
-
     onOk() {
-        const kvp = {key: this.#input.value, value: []};
-        StorageService.save(kvp);
-        document.querySelector('main-element').newStopwatch(kvp);
+        StopwatchService.newStopwatch(this, this.#input.value);
     }
 
     connectedCallback(){
         this.innerHTML = `<label class="padding-right-1em">Label:</label><input type="text"></input>`;
-
         this.#input = this.querySelector('input');
-        setTimeout(() => this.#input.focus(), 0);
     }
 }
 

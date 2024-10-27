@@ -12,7 +12,7 @@ class StopwatchTracker extends HTMLElement {
 
     get timespans() {return this.#timespans;}
     set timespans(value) {
-        this.#timespans = new TimeSpanCollection(value);
+        this.#timespans = value;
         this.#paint();
     }
 

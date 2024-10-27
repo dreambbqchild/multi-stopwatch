@@ -3,32 +3,44 @@ import './ModalDialog.js';
 import './StopwatchTracker.js';
 
 import './popups/Popups.js';
+import StopwatchService, { StopwatchEventNames } from './services/StopwatchService.js';
 
-import StorageService from './services/StorageService.js';
+class MainButton extends HTMLElement {
+    callback = null;
 
-const createTracker = (name, value) => {
-    const tracker = document.createElement('stopwatch-tracker')
-    tracker.labelFor = name;
-    tracker.timespans = value;
-    return tracker;
+    get color() {return this.getAttribute('color');}
+    get label() {return this.getAttribute('label');}
+
+    connectedCallback() {
+        this.innerHTML = `<div class="flex flex-direction-column margin-1em">
+            <button class="w-100 padding-1em bg-${this.color}" type="button">${this.label}</button>
+        </div>`;
+
+        this.querySelector('button').addEventListener('click', () => { if(this.callback) this.callback() });
+    }
 }
+
+customElements.define('main-button', MainButton);
 
 class MainElement extends HTMLElement {
     #elementLadder = null;
-    #trackers = [...StorageService.load()].map(kvp => createTracker(kvp.key, kvp.value));
 
-    newStopwatch(kvp) {
-        const tracker = createTracker(kvp.key, kvp.value);
-        this.#trackers.push(tracker)
-        this.#addTracker(tracker);
+    constructor() {
+        super();
+
+        this.addEventListener(StopwatchEventNames.newStopwatch, (e) => this.#addStopwatch(e.detail));
     }
 
-    #addTracker(tracker) {
+    #addStopwatch(stopwatch) {
+        const tracker = document.createElement('stopwatch-tracker')
+        tracker.labelFor = stopwatch.key;
+        tracker.timespans = stopwatch.value;
+
         this.#elementLadder.add(tracker);
 
         tracker.addEventListener('dblclick', () => {
             if(!tracker.isActive) {
-                for(const t of this.#trackers.filter(t => t.isActive))
+                for(const t of StopwatchService.stopwatches.filter(t => t.isActive))
                     t.stop();
 
                 tracker.start();
@@ -40,27 +52,23 @@ class MainElement extends HTMLElement {
 
     connectedCallback() {
         this.innerHTML = `<modal-dialog></modal-dialog>
-        <element-ladder></element-ladder>
-        <div class="flex flex-direction-column margin-1em">
-            <button class="w-100 padding-1em bg-blue" type="button">Get Report</button>
-        </div>
-        <div class="flex flex-direction-column margin-1em">
-            <button class="w-100 padding-1em bg-red" type="button">Reset All</button>
-        </div>
-        <div class="flex flex-direction-column margin-1em">
-            <button class="w-100 padding-1em bg-green" type="button">Add New</button>
+        <div class="root">
+            <element-ladder></element-ladder>
+            <main-button color="blue" label="Get Report"></main-button>
+            <main-button color="red" label="Reset All"></main-button>
+            <main-button color="green" label="Add New"></main-button>
         </div>`;
 
         this.#elementLadder = this.querySelector('element-ladder');
         const modalDialog = this.querySelector('modal-dialog');
 
-        for(const button of this.querySelectorAll('button')){
-            if(button.textContent === 'Add New')
-                button.addEventListener('click', () => modalDialog.open('Add New', document.createElement('add-new')));
+        for(const button of this.querySelectorAll('main-button')) {
+            if(button.label === 'Add New')
+                button.callback = () => modalDialog.open('Add New Stopwatch', document.createElement('add-new'));
         }
 
-        for(const tracker of this.#trackers)
-            this.#addTracker(tracker);
+        for(const stopwatch of StopwatchService.stopwatches)
+            this.#addStopwatch(stopwatch);
     }
 }
 

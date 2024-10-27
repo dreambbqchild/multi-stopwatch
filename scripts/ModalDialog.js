@@ -10,24 +10,23 @@ class ModalDialog extends HTMLElement {
         if(this.#modalContent.firstChild)
             this.#modalContent.removeChild(this.#modalContent.firstChild);
 
-        for(const input of document.querySelector('main-element').querySelectorAll('button, a')) {
-            if(input.closest('modal-dialog'))
-                continue;
-
+        for(const input of document.querySelector('.root').querySelectorAll('button, a'))
             input.setAttribute('inert', true);
-        }
 
         this.#title.textContent = title;
         this.#modalContent.appendChild(child);
         this.#modalOverlay.classList.add('show');
 
         document.body.style.overflow = 'hidden';
+
+        const input = child.querySelector('input');
+        setTimeout(() => input.focus(), 0);
     }
 
     #close() {
         this.#modalOverlay.classList.remove('show');
 
-        for(const input of document.querySelector('main-element').querySelectorAll('button, a'))
+        for(const input of document.querySelector('.root').querySelectorAll('button, a'))
             input.removeAttribute('inert');
 
         document.body.style.overflow = null;

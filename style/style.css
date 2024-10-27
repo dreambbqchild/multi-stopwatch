@@ -86,11 +86,11 @@ current-stopwatch {
     font-size: 3em;
 }
 
-element-ladder, main-element, stopwatch-tracker {display: block;}
+element-ladder, element-splitter, main-element, stopwatch-tracker {display: block;}
 
-element-ladder {
+element-splitter {
     
-    > div {position: relative;}
+    position: relative;
 
     .splitter-bottom, .splitter-top {
         height: 8px;    

@@ -18,9 +18,9 @@ class TimeSpan {
     #end
 
     constructor(start, end) {
-        const resolveDate = (v) => {
+        const resolveDate = (v, defaultValue) => {
             if(v === undefined || v === null)
-                return new Date();
+                return defaultValue;
 
             if(typeof(start) === 'number')
                 return new Date(v);
@@ -28,11 +28,11 @@ class TimeSpan {
             if(start.constructor === Date)
                 return v;
 
-            return new Date();
+            return defaultValue;
         }
 
-        this.#start = resolveDate(start);
-        this.#end = resolveDate(end);
+        this.#start = resolveDate(start, new Date());
+        this.#end = resolveDate(end, null);
     }
 
     get start() {return new Date(this.#start);}

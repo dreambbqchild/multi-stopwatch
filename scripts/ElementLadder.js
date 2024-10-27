@@ -1,23 +1,24 @@
+class ElementSplitter extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = `<div class="splitter-top"></div>
+        <div class="splitter-bottom"></div>`;
+    }
+}
+
+customElements.define('element-splitter', ElementSplitter);
+
 class ElementLadder extends HTMLElement {
-    #children = [];
+    #children = {};
     
     get children() { return [...this.#children]; }
 
     add(element) {
-        this.#children.push(this.#children);
+        const splitter = document.createElement('element-splitter');
+        this.appendChild(splitter);
 
-        const div = document.createElement('div');
-        const hrTop = document.createElement('div');
-        const hrBottom = document.createElement('div');
-        
-        div.appendChild(element);
-        div.appendChild(hrTop);
-        div.appendChild(hrBottom);
+        splitter.insertBefore(element, splitter.firstChild);
 
-        hrBottom.classList.add('splitter-bottom');
-        hrTop.classList.add('splitter-top');
-
-        this.appendChild(div);
+        this.#children[element] = splitter;
     }
 
     remove(element) {
