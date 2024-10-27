@@ -6,7 +6,8 @@ class ModalDialog extends HTMLElement {
     #cmdOk = null;
     #cmdCancel = null;
 
-    open(title, child) {
+    open(title, popupElementName) {
+        const child = document.createElement(popupElementName);
         if(this.#modalContent.firstChild)
             this.#modalContent.removeChild(this.#modalContent.firstChild);
 
@@ -20,7 +21,8 @@ class ModalDialog extends HTMLElement {
         document.body.style.overflow = 'hidden';
 
         const input = child.querySelector('input');
-        setTimeout(() => input.focus(), 0);
+        if(input)
+            setTimeout(() => input.focus(), 0);
     }
 
     #close() {

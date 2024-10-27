@@ -1,53 +1,70 @@
-import {TimeSpanCollection} from "./models/TimeSpan.js";
-import StorageService from "./services/StorageService.js";
+import Stopwatch from "./models/Stopwatch.js";
+import GrandDispatch from "./services/GrandDispatch.js";
+import StopwatchService, { StopwatchEventNames } from "./services/StopwatchService.js";
 
 class StopwatchTracker extends HTMLElement {
-    static observedAttributes = ['label-for'];
-
     #currentElapsed = null;
     #totalElapsed = null;
     #label = null;
     #hInterval = null;
-    #timespans = new TimeSpanCollection();
+    #stopwatch = new Stopwatch();
 
-    get timespans() {return this.#timespans;}
-    set timespans(value) {
-        this.#timespans = value;
-        this.#paint();
+    constructor() {
+        super();
+
+        GrandDispatch.addEventListener(StopwatchEventNames.resetStopwatch, (e) => {
+            if(e.detail.key === this.#stopwatch.key) {
+                if(this.#hInterval)
+                    this.#stopTimer();
+                
+                this.#paint();
+            }
+        }, true);
     }
 
-    get isActive() {return this.#timespans.isActive;}
-    get topValue() {return this.#timespans.topValue;}
+    get stopwatch() {return this.#stopwatch;}
+    set stopwatch(value) {
+        this.#stopwatch = value;
+        this.#paint();
 
-    get labelFor() {return this.getAttribute('label-for');}
-    set labelFor(value) {this.setAttribute('label-for', value);}
+        if(this.#stopwatch.isActive)
+            this.#startTimer();
+    }
+
+    #startTimer() {
+        this.classList.add('is-active');
+        this.#hInterval = setInterval(() => this.#paint(), 1000);
+    }
+
+    #stopTimer() {
+        this.classList.remove('is-active');
+        clearInterval(this.#hInterval);
+        this.#hInterval = null;
+    }
 
     start() {
         this.#currentElapsed.textContent = '00:00:00';
         
-        this.#timespans.startNew();
-        this.classList.add('is-active');
-        this.#hInterval = setInterval(() => this.#paint(), 1000);
+        this.#stopwatch.startNew();
+        this.#startTimer();
 
-        StorageService.save({key: this.labelFor, value: this.#timespans});
+        StopwatchService.save(this.#stopwatch);
     }
 
     stop() {
-        this.#timespans.stop();
-        this.classList.remove('is-active');
-        clearInterval(this.#hInterval);
-        this.#hInterval = null;
+        this.#stopwatch.stop();
+        this.#stopTimer();
 
-        StorageService.save({key: this.labelFor, value: this.#timespans});
+        StopwatchService.save(this.#stopwatch);
     }
 
     #paint() {
         if(!this.#totalElapsed)
             return;
 
-        this.#totalElapsed.textContent = this.#timespans;
-        if(this.isActive)
-            this.#currentElapsed.textContent = this.#timespans.topValue;
+        this.#totalElapsed.textContent = this.stopwatch.timeSpans;
+        if(this.stopwatch.isActive)
+            this.#currentElapsed.textContent = this.stopwatch.timeSpans.topValue;
     }
 
     connectedCallback() {
@@ -64,14 +81,9 @@ class StopwatchTracker extends HTMLElement {
         this.#currentElapsed = this.querySelector(".current-elapsed");
         this.#totalElapsed = this.querySelector(".total-elapsed");        
 
-        this.#label.textContent = this.labelFor;
+        this.#label.textContent = this.#stopwatch.key;
 
         this.#paint();
-    }
-
-    attributeChangedCallback(name, _, newValue) {        
-        if(name === 'label-for' && this.#label)
-            this.#label.textContent = newValue;
     }
 }
 

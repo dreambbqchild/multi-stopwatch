@@ -3,6 +3,7 @@ import './ModalDialog.js';
 import './StopwatchTracker.js';
 
 import './popups/Popups.js';
+import GrandDispatch from './services/GrandDispatch.js';
 import StopwatchService, { StopwatchEventNames } from './services/StopwatchService.js';
 
 class MainButton extends HTMLElement {
@@ -28,18 +29,17 @@ class MainElement extends HTMLElement {
     constructor() {
         super();
 
-        this.addEventListener(StopwatchEventNames.newStopwatch, (e) => this.#addStopwatch(e.detail));
+        GrandDispatch.addEventListener(StopwatchEventNames.newStopwatch, (e) => this.#addStopwatch(e.detail));
     }
 
     #addStopwatch(stopwatch) {
         const tracker = document.createElement('stopwatch-tracker')
-        tracker.labelFor = stopwatch.key;
-        tracker.timespans = stopwatch.value;
+        tracker.stopwatch = stopwatch;
 
         this.#elementLadder.add(tracker);
 
         tracker.addEventListener('dblclick', () => {
-            if(!tracker.isActive) {
+            if(!tracker.stopwatch.isActive) {
                 for(const t of StopwatchService.stopwatches.filter(t => t.isActive))
                     t.stop();
 
@@ -64,7 +64,9 @@ class MainElement extends HTMLElement {
 
         for(const button of this.querySelectorAll('main-button')) {
             if(button.label === 'Add New')
-                button.callback = () => modalDialog.open('Add New Stopwatch', document.createElement('add-new'));
+                button.callback = () => modalDialog.open('Add New Stopwatch', 'add-new');
+            else if(button.label === 'Reset All')
+                button.callback = () => modalDialog.open('Are you sure?', 'are-you-sure');
         }
 
         for(const stopwatch of StopwatchService.stopwatches)

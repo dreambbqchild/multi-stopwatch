@@ -1,13 +1,12 @@
-import { TimeSpanCollection } from "../models/TimeSpan.js";
 import StopwatchService from "../services/StopwatchService.js";
 
 class AddNew extends HTMLElement {
     #input = null;
     onOk() {
-        StopwatchService.newStopwatch(this, this.#input.value);
+        StopwatchService.newStopwatch(this.#input.value);
     }
 
-    connectedCallback(){
+    connectedCallback() {
         this.innerHTML = `<label class="padding-right-1em">Label:</label><input type="text"></input>`;
         this.#input = this.querySelector('input');
     }
