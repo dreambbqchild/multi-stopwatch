@@ -84,6 +84,11 @@ class TimeSpanCollection {
         return new TimeSpan(this.#timeSpans[0].start, this.#timeSpans[0].end);
     }
 
+    *getTimeSpans() {
+        for(const timespan of this.#timeSpans)
+            yield timespan;
+    }
+
     startNew() {
         this.#timeSpans.unshift(new TimeSpan());
     }

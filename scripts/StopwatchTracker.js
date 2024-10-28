@@ -79,7 +79,14 @@ class StopwatchTracker extends HTMLElement {
 
         this.#label = this.querySelector(".label");
         this.#currentElapsed = this.querySelector(".current-elapsed");
-        this.#totalElapsed = this.querySelector(".total-elapsed");        
+        this.#totalElapsed = this.querySelector(".total-elapsed");
+        this.querySelector('a').addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const modalDialog = document.querySelector('modal-dialog');
+            const editor = modalDialog.open(`Edit ${this.#stopwatch.key}`, 'stopwatch-editor');
+            editor.forStopwatch(this.#stopwatch);
+        });
 
         this.#label.textContent = this.#stopwatch.key;
 

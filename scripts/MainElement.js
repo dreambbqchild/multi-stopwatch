@@ -25,6 +25,7 @@ customElements.define('main-button', MainButton);
 
 class MainElement extends HTMLElement {
     #elementLadder = null;
+    #trackers = [];
 
     constructor() {
         super();
@@ -35,12 +36,13 @@ class MainElement extends HTMLElement {
     #addStopwatch(stopwatch) {
         const tracker = document.createElement('stopwatch-tracker')
         tracker.stopwatch = stopwatch;
+        this.#trackers.push(tracker);
 
         this.#elementLadder.add(tracker);
 
         tracker.addEventListener('dblclick', () => {
             if(!tracker.stopwatch.isActive) {
-                for(const t of StopwatchService.stopwatches.filter(t => t.isActive))
+                for(const t of this.#trackers.filter(t => t.stopwatch.isActive))
                     t.stop();
 
                 tracker.start();
@@ -53,7 +55,7 @@ class MainElement extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `<modal-dialog></modal-dialog>
         <div class="root">
-            <element-ladder></element-ladder>
+            <element-ladder class="user-select-none"></element-ladder>
             <main-button color="blue" label="Get Report"></main-button>
             <main-button color="red" label="Reset All"></main-button>
             <main-button color="green" label="Add New"></main-button>

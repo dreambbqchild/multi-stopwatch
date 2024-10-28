@@ -71,7 +71,7 @@ html, body, button, input {color: white; font-size: 14pt; font-family: 'IBM Plex
 .text-align-center {text-align: center;}
 .text-align-right {text-align: right;}
 
-.user-select-none {user-select: none;}
+.user-select-none {user-select: none; -webkit-user-select: none; }
 
 .w-100 {width: 100%;}
 .w-50 {width: 50%;}
