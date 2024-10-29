@@ -1,4 +1,5 @@
 import { TimeSpan, TimeSpanCollection } from "../models/TimeSpan.js";
+import ElementFactory from "../services/ElementFactory.js";
 import GrandDispatch from "../services/GrandDispatch.js";
 import StopwatchService, { StopwatchEventNames } from "../services/StopwatchService.js";
 
@@ -9,36 +10,53 @@ const formatDate = (date) => {
 
 const formatTime = (date) => date.toLocaleTimeString('en-GB');
 
+class StopwatchTimeSpan extends HTMLElement {
+    #startDate;
+    #startTime;
+    #endDate;
+    #endTime;
+
+    start = null;
+    end = null;  
+
+    connectedCallback() {
+        let button = null;
+        ElementFactory.appendChildrenTo(this, 
+            this.#startDate = ElementFactory.createElement('input', {type: 'date', value: formatDate(this.start)}),
+            this.#startTime = ElementFactory.createElement('input', {type: 'time', value: formatTime(this.start)}),
+            ElementFactory.createElement('span', {textContent: ' to '}),
+            this.#endDate = ElementFactory.createElement('input', {type: 'date', value: formatDate(this.end)}),
+            this.#endTime = ElementFactory.createElement('input', {type: 'time', value: formatTime(this.end)}),
+            button = ElementFactory.createElement('button', {type: 'button', textContent: '🗑'})
+        );        
+
+        button.addEventListener('click', () => this.parentElement.removeChild(this));
+
+        for(const input of [this.#startDate, this.#startTime])
+            input.addEventListener('change', () => this.start = new Date(`${this.#startDate.value} ${this.#startTime.value}`));
+
+        for(const input of [this.#endDate, this.#endTime])
+            input.addEventListener('change', () => this.end = new Date(`${this.#endDate.value} ${this.#endTime.value}`));    
+    }
+}
+
+customElements.define('stopwatch-timespan', StopwatchTimeSpan);
+
 class StopwatchEditor extends HTMLElement {
     #container = null;
     #stopwatch = null;
 
     #getElementForTimeSpan = (t) => {
-        const div = document.createElement('div');
-        div.style.paddingBottom = '1em';
-        
-        div.innerHTML = `<input type="date" date-for="start" value="${formatDate(t.start)}"></input>
-        <input type="time" time-for="start" value="${formatTime(t.start)}"/></input>
-        <span> to </span>
-        <input type="date" date-for="end" value="${formatDate(t.end)}"></input>
-        <input type="time" time-for="end" value="${formatTime(t.end)}"></input>
-        <button type="button">🗑</button>`;
-    
-        const button = div.querySelector('button');
-        button.addEventListener('click', () => this.#container.removeChild(div));
-
-        return div;
+        const stopwatchTimeSpan = document.createElement('stopwatch-timespan');
+        stopwatchTimeSpan.start = t.start;
+        stopwatchTimeSpan.end = t.end;
+        return stopwatchTimeSpan;
     };
 
     onOk() {
         const result = [];
-        for(const element of this.#container.children) {
-            var startDate = element.querySelector('[date-for="start"]');
-            var startTime = element.querySelector('[time-for="start"]');
-            var endDate = element.querySelector('[date-for="end"]');
-            var endTime = element.querySelector('[time-for="end"]');
-
-            result.push({start: new Date(`${startDate.value} ${startTime.value}`) ,end: new Date(`${endDate.value} ${endTime.value}`)});
+        for(const {start, end} of this.#container.children) {
+            result.push({start, end});
         }
 
         result.sort((a, b) => b.start.getTime() - a.end.getTime());

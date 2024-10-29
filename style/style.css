@@ -86,7 +86,7 @@ current-stopwatch {
     font-size: 3em;
 }
 
-element-ladder, element-splitter, main-element, stopwatch-tracker {display: block;}
+element-ladder, element-splitter, main-element, stopwatch-timespan, stopwatch-tracker {display: block;}
 
 element-splitter {
     
@@ -108,6 +108,10 @@ input:focus {outline: none;}
 
 p {
     margin: 0.25em 0em;
+}
+
+stopwatch-timespan {
+    padding-bottom: 1em;
 }
 
 stopwatch-tracker {    
