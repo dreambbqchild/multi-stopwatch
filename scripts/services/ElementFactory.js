@@ -5,8 +5,23 @@ export default class ElementFactory {
         return element;
     }
 
-    static appendChildrenTo(element, ...elements) {
+    static appendElementsTo(element, elements) {
+        if(elements.constructor === Function)
+            elements = elements.valueOf();
+
         for(const e of elements)
             element.appendChild(e);
+
+        return elements;
+    }
+
+    static beginCreateElements() {
+        const elements = [];
+        const result = (name, options) => {
+            elements.push(ElementFactory.createElement(name, options));
+            return result;
+        };
+        result.valueOf = () => elements;
+        return result;
     }
 }

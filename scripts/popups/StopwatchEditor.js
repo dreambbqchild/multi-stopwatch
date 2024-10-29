@@ -20,14 +20,15 @@ class StopwatchTimeSpan extends HTMLElement {
     end = null;  
 
     connectedCallback() {
+        let _ = null;
         let button = null;
-        ElementFactory.appendChildrenTo(this, 
-            this.#startDate = ElementFactory.createElement('input', {type: 'date', value: formatDate(this.start)}),
-            this.#startTime = ElementFactory.createElement('input', {type: 'time', value: formatTime(this.start)}),
-            ElementFactory.createElement('span', {textContent: ' to '}),
-            this.#endDate = ElementFactory.createElement('input', {type: 'date', value: formatDate(this.end)}),
-            this.#endTime = ElementFactory.createElement('input', {type: 'time', value: formatTime(this.end)}),
-            button = ElementFactory.createElement('button', {type: 'button', textContent: '🗑'})
+        [this.#startDate, this.#startTime, _, this.#endDate, this.#endTime, button] = ElementFactory.appendElementsTo(this, ElementFactory.beginCreateElements()
+            ('input', {type: 'date', value: formatDate(this.start)})
+            ('input', {type: 'time', value: formatTime(this.start)})
+            ('span', {textContent: ' to '})
+            ('input', {type: 'date', value: formatDate(this.end)})
+            ('input', {type: 'time', value: formatTime(this.end)})
+            ('button', {type: 'button', textContent: '🗑'})
         );        
 
         button.addEventListener('click', () => this.parentElement.removeChild(this));
