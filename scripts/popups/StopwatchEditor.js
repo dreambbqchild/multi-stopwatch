@@ -66,14 +66,11 @@ class StopwatchEditor extends HTMLElement {
     }
 
     forStopwatch(stopwatch) {
-        let added = false;
-        for(const t of stopwatch.timeSpans.getTimeSpans().filter(t => t.end)) {            
+        for(const t of stopwatch.timeSpans.getTimeSpans().filter(t => t.end))
             this.#container.appendChild(this.#getElementForTimeSpan(t));
-            added = true;
-        }
 
-        if(!added)
-            this.#getElementForTimeSpan(new TimeSpan(new Date(), new Date()));
+        if(!this.#container.children.length)
+            this.#container.appendChild(this.#getElementForTimeSpan(new TimeSpan(new Date(), new Date())));
 
         this.#stopwatch = stopwatch;
     }

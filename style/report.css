@@ -1,0 +1,23 @@
+body {
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+}
+
+html, body, button, input {font-size: 12pt; font-family: 'IBM Plex Sans';}
+
+table {
+  border-top: solid black 1px;
+  border-left: solid black 1px;
+  border-collapse: collapse;
+
+  tr:nth-child(even) {background-color: lightgray;}
+
+  td {
+    border-bottom: solid black 1px;
+    border-right: solid black 1px;
+    padding: 0.5em;
+  }
+}
+
+.font-weight-900 {font-weight: 900;}
+.text-align-right {text-align: right;}
