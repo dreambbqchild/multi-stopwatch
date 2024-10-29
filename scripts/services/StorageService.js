@@ -1,18 +1,21 @@
-const prefix = 'multi-stopwatch-';
-
 export default class StorageService {
     static save(kvp) {
-        localStorage.setItem(`${prefix}${kvp.key}`, JSON.stringify(kvp.value));
+        localStorage.setItem(kvp.key, JSON.stringify(kvp.value));
     }
 
-    static *load() {
+    static load(key) {
+        const result = localStorage.getItem(key);
+        return result ? JSON.parse(result) : null;
+    }
+
+    static *loadWithPrefix(prefix) {
         for(const [key, value] of Object.entries(localStorage)) {
             if(key.startsWith(prefix))
-                yield { key: key.substring(prefix.length), value: JSON.parse(value) }; 
+                yield { key, value: JSON.parse(value) }; 
         }
     }
 
-    static clear() {
+    static clearWithPrefix(prefix) {
         for(const key of [...Object.keys(localStorage)]) {
             if(key.startsWith(prefix))
                 localStorage.removeItem(key);

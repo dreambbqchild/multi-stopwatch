@@ -30,7 +30,7 @@ class MainElement extends HTMLElement {
     constructor() {
         super();
 
-        GrandDispatch.addEventListener(StopwatchEventNames.newStopwatch, (e) => this.#addStopwatch(e.detail));
+        GrandDispatch.addEventListener(StopwatchEventNames.new, (e) => this.#addStopwatch(e.detail));
     }
 
     #addStopwatch(stopwatch) {

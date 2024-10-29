@@ -12,14 +12,19 @@ class StopwatchTracker extends HTMLElement {
     constructor() {
         super();
 
-        GrandDispatch.addEventListener(StopwatchEventNames.resetStopwatch, (e) => {
+        GrandDispatch.addEventListener(StopwatchEventNames.reset, (e) => {
             if(e.detail.key === this.#stopwatch.key) {
                 if(this.#hInterval)
                     this.#stopTimer();
                 
                 this.#paint();
             }
-        }, true);
+        });
+
+        GrandDispatch.addEventListener(StopwatchEventNames.edited, (e) => {
+            if(e.detail.key === this.#stopwatch.key)                
+                this.#paint();
+        });
     }
 
     get stopwatch() {return this.#stopwatch;}
