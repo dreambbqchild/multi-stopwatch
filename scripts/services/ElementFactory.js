@@ -9,6 +9,9 @@ export default class ElementFactory {
         if(elements.constructor === Function)
             elements = elements.valueOf();
 
+        if(elements.constructor !== Array)
+            elements = [elements];
+
         for(const e of elements)
             element.appendChild(e);
 

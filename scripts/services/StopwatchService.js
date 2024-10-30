@@ -42,7 +42,7 @@ export default class StopwatchService {
     }
 
     static resetAll() {
-        for(const stopwatch of stopwatches) {
+        for(const stopwatch of this.stopwatches) {
             stopwatch.timeSpans = new TimeSpanCollection();
             this.save(stopwatch);
             GrandDispatch.dispatchEvent(StopwatchEventNames.reset, stopwatch);

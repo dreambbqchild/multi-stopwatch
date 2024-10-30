@@ -10,7 +10,14 @@ table {
   border-left: solid black 1px;
   border-collapse: collapse;
 
-  tr:nth-child(even) {background-color: lightgray;}
+  thead {
+    text-align: center;
+    font-weight: 900;
+  }
+
+  tbody {
+    tr:nth-child(even) {background-color: lightgray;}
+  }
 
   td {
     border-bottom: solid black 1px;

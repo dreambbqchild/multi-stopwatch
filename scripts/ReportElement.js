@@ -1,21 +1,34 @@
+import { secondsAsTimeString } from "./models/TimeSpan.js";
 import ElementFactory from "./services/ElementFactory.js";
 import StopwatchService from "./services/StopwatchService.js";
 
 class ReportElement extends HTMLElement {
     connectedCallback() {
+        let totalSeconds = 0;
         for(const stopwatch of StopwatchService.stopwatches) {
             if(stopwatch.timeSpans == 0)
                 continue;
 
             const table = ElementFactory.appendElementsTo(this, ElementFactory.beginCreateElements()
-                ('h1', {textContent: stopwatch.key})
-                ('hr')
+                ('h2', {textContent: stopwatch.key})
                 ('table', {classList: 'location-report'})
-            )[2];
+            )[1];
 
-            for(const timeSpan of stopwatch.timeSpans.getTimeSpans()){
-                let tr = ElementFactory.createElement('tr');
-                table.appendChild(tr);
+            const [thead, tbody, tfoot] = ElementFactory.appendElementsTo(table, ElementFactory.beginCreateElements()
+                ('thead')
+                ('tbody')
+                ('tfoot')
+            );
+
+            const [theadRow] = ElementFactory.appendElementsTo(thead, ElementFactory.createElement('tr'));
+            ElementFactory.appendElementsTo(theadRow, ElementFactory.beginCreateElements()
+                ('td', {textContent: 'Start'})
+                ('td', {textContent: 'End'})
+                ('td', {textContent: 'Duration'})
+            );
+
+            for(const timeSpan of stopwatch.timeSpans.getTimeSpans()) {
+                let [tr] = ElementFactory.appendElementsTo(tbody, ElementFactory.createElement('tr'));
 
                 ElementFactory.appendElementsTo(tr, ElementFactory.beginCreateElements()
                     ('td', {textContent: `${timeSpan.start.toLocaleDateString("en-US")} ${timeSpan.start.toLocaleTimeString('en-US')}`})
@@ -24,14 +37,16 @@ class ReportElement extends HTMLElement {
                 );
             }
 
-            const totalRow = ElementFactory.createElement('tr', {classList: 'font-weight-900'});
-            table.appendChild(totalRow);
-
+            const [totalRow] = ElementFactory.appendElementsTo(tfoot, ElementFactory.createElement('tr', {classList: 'font-weight-900'}));
             ElementFactory.appendElementsTo(totalRow, ElementFactory.beginCreateElements()
                 ('td', {textContent: `Total:`, colSpan: 2, classList: 'text-align-right'})
                 ('td', {textContent: `${stopwatch.timeSpans}`})
             );
+
+            totalSeconds += stopwatch.timeSpans;
         }
+
+        ElementFactory.appendElementsTo(this, ElementFactory.createElement('h1', {textContent: `Grand Total: ${secondsAsTimeString(totalSeconds)}`}));
     }
 }
 

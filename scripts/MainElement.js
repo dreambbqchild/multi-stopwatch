@@ -23,6 +23,22 @@ class MainButton extends HTMLElement {
 
 customElements.define('main-button', MainButton);
 
+class MainLinkButton extends HTMLElement {    
+    get url() {return this.getAttribute('url');}
+    get color() {return this.getAttribute('color');}
+    get label() {return this.getAttribute('label');}
+
+    connectedCallback() {
+        this.innerHTML = `<form action="${this.url}" target="_blank">
+            <div class="flex flex-direction-column margin-1em">
+                <button class="w-100 padding-1em bg-${this.color}">${this.label}</button>
+            </div>
+        </form>`;
+    }
+}
+
+customElements.define('main-link-button', MainLinkButton);
+
 class MainElement extends HTMLElement {
     #elementLadder = null;
     #trackers = [];
@@ -56,7 +72,7 @@ class MainElement extends HTMLElement {
         this.innerHTML = `<modal-dialog></modal-dialog>
         <div class="root">
             <element-ladder class="user-select-none"></element-ladder>
-            <main-button color="blue" label="Get Report"></main-button>
+            <main-link-button color="blue" label="Get Report" url="report.html"></main-link-button>
             <main-button color="red" label="Reset All"></main-button>
             <main-button color="green" label="Add New"></main-button>
         </div>`;
