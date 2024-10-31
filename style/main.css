@@ -10,7 +10,7 @@
 }
   
 html, body {margin: 0; padding: 0; background-color: var(--background-gray);}
-html, body, button, input {color: white; font-size: 14pt; font-family: 'IBM Plex Sans';}
+html, body, button, input {color: white; font-size: 12pt; font-family: 'IBM Plex Sans';}
 
 * {box-sizing: border-box;}
 

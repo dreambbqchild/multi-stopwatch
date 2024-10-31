@@ -13,7 +13,7 @@ const secondsAsTimeString = (secs) => {
     return `${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}`;
 }
 
-const truncateMilliseconds = (d) => new Date(parseInt(d.getTime() * 0.001) * 1000);
+const truncateMilliseconds = (d) => d === null ? null : new Date(parseInt(d.getTime() * 0.001) * 1000);
 
 class TimeSpan {
     #start
