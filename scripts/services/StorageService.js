@@ -21,4 +21,8 @@ export default class StorageService {
                 localStorage.removeItem(key);
         }
     }
+
+    static delete(key) {
+        localStorage.removeItem(key);
+    }
 }

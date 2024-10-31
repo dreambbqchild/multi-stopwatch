@@ -16,7 +16,9 @@ for(const kvp of StorageService.loadWithPrefix(prefix)) {
 const StopwatchEventNames = {
     new: 'newstopwatch',
     reset: 'resetstopwatch',
-    edited: 'editedstopwatch'
+    edited: 'editedstopwatch',
+    deleted: 'deletedstopwatch',
+    changeName: 'changednamestopwatch'
 }
 
 function *stopwatchIterator() {
@@ -31,8 +33,31 @@ export default class StopwatchService {
         if(!stopwatches[stopwatch.key])
             stopwatchOrder.push(stopwatch.key);
 
-        StorageService.save({key: `${prefix}${stopwatch.key}`, value: stopwatch.timeSpans});        
+        StorageService.save({key: `${prefix}${stopwatch.key}`, value: stopwatch.timeSpans});
         StorageService.save({key: stopwatchOrderKey, value: stopwatchOrder})
+    }
+
+    static delete(key) {
+        delete stopwatches[key];
+        StorageService.delete(`${prefix}${key}`);
+        const keyIndex = stopwatchOrder.indexOf(key);
+        stopwatchOrder.splice(keyIndex);
+        StorageService.save({key: stopwatchOrderKey, value: stopwatchOrder});
+
+        GrandDispatch.dispatchEvent(StopwatchEventNames.deleted, {key});
+    }
+
+    static changeName(from, to) {
+        stopwatches[to] = stopwatches[from];
+        delete stopwatches[from];
+        StorageService.delete(`${prefix}${from}`);
+
+        stopwatches[to].key = to;
+        const fromIndex = stopwatchOrder.indexOf(from);
+        stopwatchOrder[fromIndex] = to;
+
+        this.save(stopwatches[to]);
+        GrandDispatch.dispatchEvent(StopwatchEventNames.changeName, {from, to});
     }
 
     static newStopwatch(key) {

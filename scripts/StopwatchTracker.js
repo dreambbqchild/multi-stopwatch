@@ -25,6 +25,18 @@ class StopwatchTracker extends HTMLElement {
             if(e.detail.key === this.#stopwatch.key)                
                 this.#paint();
         });
+
+        GrandDispatch.addEventListener(StopwatchEventNames.changeName, (e) => {
+            const {from, to} = e.detail;
+            if(from === this.#label.textContent)
+                this.#label.textContent = to;
+        });
+
+        GrandDispatch.addEventListener(StopwatchEventNames.deleted, (e) => {
+            const {key} = e.detail;
+            if(key === this.#label.textContent)
+                this.parentElement.parentElement.remove(this);
+        });
     }
 
     get stopwatch() {return this.#stopwatch;}

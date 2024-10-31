@@ -13,6 +13,8 @@ const secondsAsTimeString = (secs) => {
     return `${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}`;
 }
 
+const truncateMilliseconds = (d) => new Date(parseInt(d.getTime() * 0.001) * 1000);
+
 class TimeSpan {
     #start
     #end
@@ -29,10 +31,10 @@ class TimeSpan {
                 return v;
 
             return defaultValue;
-        }
+        }        
 
-        this.#start = resolveDate(start, new Date());
-        this.#end = resolveDate(end, null);
+        this.#start = truncateMilliseconds(resolveDate(start, new Date()));
+        this.#end = truncateMilliseconds(resolveDate(end, null));
     }
 
     get start() {return new Date(this.#start);}
@@ -47,11 +49,11 @@ class TimeSpan {
         if(this.#end)
             return;
         
-        this.#end = new Date();
+        this.#end = truncateMilliseconds(new Date());
     }
 
     valueOf() {
-        const end = this.#end ?? new Date();
+        const end = this.#end ?? truncateMilliseconds(new Date());
         return Math.floor((end.getTime() - this.#start.getTime()) / 1000);
     }
 

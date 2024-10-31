@@ -1,7 +1,16 @@
 export default class ElementFactory {
     static createElement(name, options) {
         const element = document.createElement(name);
+
+        if(options?.style) {
+            for(const [key, value] of Object.entries(options.style))
+                element.style[key] = value;
+
+            delete options.style;
+        }
+
         Object.assign(element, options);
+
         return element;
     }
 

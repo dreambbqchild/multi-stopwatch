@@ -8,9 +8,9 @@ class ElementSplitter extends HTMLElement {
 customElements.define('element-splitter', ElementSplitter);
 
 class ElementLadder extends HTMLElement {
-    #children = {};
+    #children = new Map();
     
-    get children() { return [...this.#children]; }
+    get children() { return this.#children.keys(); }
 
     add(element) {
         const splitter = document.createElement('element-splitter');
@@ -18,11 +18,13 @@ class ElementLadder extends HTMLElement {
 
         splitter.insertBefore(element, splitter.firstChild);
 
-        this.#children[element] = splitter;
+        this.#children.set(element, splitter);
     }
 
     remove(element) {
-
+        const splitter = this.#children.get(element);
+        this.removeChild(splitter);
+        this.#children.delete(element);
     }    
 }
 

@@ -1,4 +1,5 @@
 :root {
+    --red-color: rgb(124, 28, 28);
     --green-color: rgb(31, 124, 28);
     --background-gray: rgb(53, 56, 62);
 }
@@ -17,7 +18,7 @@ html, body, button, input {color: white; font-size: 14pt; font-family: 'IBM Plex
 
 .bg-blue {background-color: rgb(28, 33, 124);}
 .bg-green {background-color: var(--green-color);}
-.bg-red {background-color: rgb(124, 28, 28);}
+.bg-red {background-color: var(--red-color);}
 
 .flex {display: flex;}
 .flex-direction-column {flex-direction: column;}
@@ -82,14 +83,17 @@ a {
     font-weight: 900;
 }
 
+button {
+    border-radius: 0px;
+}
+
 current-stopwatch {
     font-size: 3em;
 }
 
 element-ladder, element-splitter, main-element, stopwatch-timespan, stopwatch-tracker {display: block;}
 
-element-splitter {
-    
+element-splitter {    
     position: relative;
 
     .splitter-bottom, .splitter-top {
@@ -111,7 +115,8 @@ p {
 }
 
 stopwatch-timespan {
-    padding-bottom: 1em;
+    > div {padding: 0.5em 0;}
+    .date-time:first-child {margin-bottom:  0.5em;}
 }
 
 stopwatch-tracker {    
