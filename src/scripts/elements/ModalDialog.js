@@ -22,7 +22,7 @@ class ModalDialog extends HTMLElement {
 
         const input = child.querySelector('input');
         if(input)
-            setTimeout(() => {input.focus(); input.select();}, 0);
+            setTimeout(() => {input.focus();}, 0);
 
         return child;
     }

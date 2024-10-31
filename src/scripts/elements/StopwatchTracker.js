@@ -89,7 +89,7 @@ class StopwatchTracker extends HTMLElement {
     <div class="flex-grow-1">
         <p style="font-size: 1.5em" class="font-weight-bold"><span class="label"></span></p>
         <p style="font-size: 1.5em" class="current">Current: <span class="current-elapsed">00:00:00</span></p>
-        <p>Total Time Accumulated: <span class="total-elapsed">00:00:00</span></p>
+        <p>Total: <span class="total-elapsed">00:00:00</span></p>
     </div>
     <div class="flex align-items-center"><a href="#">• • •</a></div>
 </div>`;

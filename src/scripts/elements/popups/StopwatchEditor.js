@@ -41,7 +41,7 @@ class StopwatchTimeSpan extends HTMLElement {
         [this.#startDate, this.#startTime] = createDateTime('Start', leftDiv, this.start);
         [this.#endDate, this.#endTime] = createDateTime('End', leftDiv, this.end);
         
-        const [cmdDelete] = ElementFactory.appendElementsTo(rightDiv, ElementFactory.createElement('button', {type: 'button', textContent: '🗑'}));
+        const [cmdDelete] = ElementFactory.appendElementsTo(rightDiv, ElementFactory.createElement('button', {type: 'button', textContent: '🗑', classList: 'bg-light-gray'}));
 
         cmdDelete.addEventListener('click', () => {
             preparingToDelete = !preparingToDelete;
@@ -129,14 +129,14 @@ class StopwatchEditor extends HTMLElement {
             ('div', {classList:'flex flex-grow-1', style: {justifyContent: 'right', minWidth: '2em'}})
         );
 
-        const [cmdDeleteStopwatch] = ElementFactory.appendElementsTo(deleteDiv, ElementFactory.createElement('button', {type: 'button', textContent: '🗑'}));
+        const [cmdDeleteStopwatch] = ElementFactory.appendElementsTo(deleteDiv, ElementFactory.createElement('button', {type: 'button', textContent: '🗑', classList: 'bg-light-gray'}));
 
         const [bodyDiv] = ElementFactory.appendElementsTo(this, ElementFactory.createElement('div', {classList: 'flex flex-direction-column', style: {height: '50vh', position: 'relative'}}));
 
         ElementFactory.appendElementsTo(bodyDiv, ElementFactory.createElement('div', {textContent: 'Press Ok to remove this stopwatch.', style: {position: 'absolute', top: '0', zIndex: -1, color: 'red'}}));
 
         [this.#container, cmdAddTime] = ElementFactory.appendElementsTo(bodyDiv, ElementFactory.beginCreateElements()
-            ('element-ladder', {style: {height: '100%', overflowY: 'scroll', backgroundColor: 'var(--background-gray)'}})
+            ('element-ladder', {style: {height: '100%', overflowY: 'scroll', backgroundColor: 'var(--background-gray-color)'}})
             ('button', {classList:'flex-grow-1 bg-green margin-1em', type: 'button', textContent: 'Add Time'})
         );
 

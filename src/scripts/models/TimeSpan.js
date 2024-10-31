@@ -122,4 +122,4 @@ class TimeSpanCollection {
     }
 }
 
-export {TimeSpan, TimeSpanCollection, secondsAsTimeString};
+export {TimeSpan, TimeSpanCollection, secondsAsTimeString, truncateMilliseconds};

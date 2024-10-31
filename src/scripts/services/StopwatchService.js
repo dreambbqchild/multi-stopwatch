@@ -30,7 +30,7 @@ export default class StopwatchService {
     static get stopwatches() { return stopwatchIterator(); }
 
     static save(stopwatch) {
-        if(!stopwatches[stopwatch.key])
+        if(stopwatchOrder.indexOf(stopwatch.key) < 0)
             stopwatchOrder.push(stopwatch.key);
 
         StorageService.save({key: `${prefix}${stopwatch.key}`, value: stopwatch.timeSpans});
