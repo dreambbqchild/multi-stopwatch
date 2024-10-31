@@ -1,7 +1,7 @@
-import { TimeSpan, TimeSpanCollection } from "../models/TimeSpan.js";
-import ElementFactory from "../services/ElementFactory.js";
-import GrandDispatch from "../services/GrandDispatch.js";
-import StopwatchService, { StopwatchEventNames } from "../services/StopwatchService.js";
+import { TimeSpan, TimeSpanCollection } from "../../models/TimeSpan.js";
+import ElementFactory from "../../services/ElementFactory.js";
+import GrandDispatch from "../../services/GrandDispatch.js";
+import StopwatchService, { StopwatchEventNames } from "../../services/StopwatchService.js";
 
 const formatDate = (date) => {
     const parts = date.toLocaleDateString().split('/');

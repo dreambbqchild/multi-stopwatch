@@ -1,4 +1,4 @@
-import StopwatchService from "../services/StopwatchService.js";
+import StopwatchService from "../../services/StopwatchService.js";
 
 class AreYouSure extends HTMLElement {
     #input = null;

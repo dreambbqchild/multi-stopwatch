@@ -1,4 +1,4 @@
-import StopwatchService from "../services/StopwatchService.js";
+import StopwatchService from "../../services/StopwatchService.js";
 
 class AddNew extends HTMLElement {
     #input = null;

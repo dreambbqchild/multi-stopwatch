@@ -1,6 +1,6 @@
-import Stopwatch from "./models/Stopwatch.js";
-import GrandDispatch from "./services/GrandDispatch.js";
-import StopwatchService, { StopwatchEventNames } from "./services/StopwatchService.js";
+import Stopwatch from "../models/Stopwatch.js";
+import GrandDispatch from "../services/GrandDispatch.js";
+import StopwatchService, { StopwatchEventNames } from "../services/StopwatchService.js";
 
 class StopwatchTracker extends HTMLElement {
     #currentElapsed = null;

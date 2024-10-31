@@ -1,6 +1,6 @@
-import { secondsAsTimeString } from "./models/TimeSpan.js";
-import ElementFactory from "./services/ElementFactory.js";
-import StopwatchService from "./services/StopwatchService.js";
+import { secondsAsTimeString } from "../models/TimeSpan.js";
+import ElementFactory from "../services/ElementFactory.js";
+import StopwatchService from "../services/StopwatchService.js";
 
 class ReportElement extends HTMLElement {
     connectedCallback() {

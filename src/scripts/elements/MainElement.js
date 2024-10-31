@@ -3,8 +3,8 @@ import './ModalDialog.js';
 import './StopwatchTracker.js';
 
 import './popups/Popups.js';
-import GrandDispatch from './services/GrandDispatch.js';
-import StopwatchService, { StopwatchEventNames } from './services/StopwatchService.js';
+import GrandDispatch from '../services/GrandDispatch.js';
+import StopwatchService, { StopwatchEventNames } from '../services/StopwatchService.js';
 
 class MainButton extends HTMLElement {
     callback = null;
