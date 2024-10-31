@@ -13,11 +13,15 @@ const formatTime = (date) => date.toLocaleTimeString('en-GB');
 const createDateTime = (label, parent, date) => {
     const [div] = ElementFactory.appendElementsTo(parent, ElementFactory.createElement('div', {classList: 'flex date-time'}))
 
-    return ElementFactory.appendElementsTo(div, ElementFactory.beginCreateElements()
+    const result = ElementFactory.appendElementsTo(div, ElementFactory.beginCreateElements()
         ('span', {textContent: `${label}:\u00A0`, classList: 'flex-grow-1', style:{textAlign: 'right'}})
         ('input', {type: 'date', value: formatDate(date)})
         ('input', {type: 'time', value: formatTime(date)})
     );
+
+    result.shift();
+
+    return result;
 }
 
 class StopwatchTimeSpan extends HTMLElement {
@@ -57,10 +61,24 @@ class StopwatchTimeSpan extends HTMLElement {
         });
 
         for(const input of [this.#startDate, this.#startTime])
-            input.addEventListener('change', () => this.start = new Date(`${this.#startDate.value} ${this.#startTime.value}`));
+            input.addEventListener('change', () => {
+                let start = new Date(`${this.#startDate.value} ${this.#startTime.value}`); 
+                start = new Date(Math.min(start.getTime(), this.end.getTime()));
+                this.start = start;
+
+                this.#startDate.value = formatDate(start);
+                this.#startTime.value = formatTime(start);
+            });
 
         for(const input of [this.#endDate, this.#endTime])
-            input.addEventListener('change', () => this.end = new Date(`${this.#endDate.value} ${this.#endTime.value}`));    
+            input.addEventListener('change', () => {
+                let end = new Date(`${this.#endDate.value} ${this.#endTime.value}`);
+                end = new Date(Math.max(end.getTime(), this.start.getTime()));
+                this.end = end;
+
+                this.#endDate.value = formatDate(end);
+                this.#endTime.value = formatTime(end);
+            });
     }
 }
 
