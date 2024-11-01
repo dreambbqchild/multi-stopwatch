@@ -3,8 +3,15 @@ import ElementFactory from "../../services/ElementFactory.js";
 import GrandDispatch from "../../services/GrandDispatch.js";
 import StopwatchService, { StopwatchEventNames } from "../../services/StopwatchService.js";
 
+const constrainToDeviceResolution = (date) => {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent))
+        return new Date(date.getTime() - (date.getTime() % 60000));
+
+    return date;
+}
+
 const createDateTime = (label, parent, date) => {
-    const [div] = ElementFactory.appendElementsTo(parent, ElementFactory.createElement('div', {classList: 'flex date-time'}))
+    const [div] = ElementFactory.appendElementsTo(parent, ElementFactory.createElement('div', {classList: 'flex date-time'}))    
 
     const result = ElementFactory.appendElementsTo(div, ElementFactory.beginCreateElements()
         ('span', {textContent: `${label}:\u00A0`, classList: 'flex-grow-1', style:{textAlign: 'right'}})
@@ -19,9 +26,14 @@ const createDateTime = (label, parent, date) => {
 class StopwatchTimeSpan extends HTMLElement {
     #startDateTime;
     #endDateTime;
+    #start = null;
+    #end = null;
 
-    start = null;
-    end = null;  
+    get start() {return this.#start;};
+    set start(value) {this.#start = constrainToDeviceResolution(value); }
+    
+    get end() {return this.#end;};
+    set end(value) {this.#end = constrainToDeviceResolution(value); }
 
     connectedCallback() {
         let preparingToDelete = false;
@@ -49,28 +61,20 @@ class StopwatchTimeSpan extends HTMLElement {
                 this.end = new Date(this.#endDateTime.valueAsNumber);
             }
         });
+
+        const onChange = (element, target, mathFn) => {
+            if(element.value === '')
+                return;
+
+            let value = new Date(element.value);
+            value = new Date(mathFn(value.getTime(), this[target === 'start' ? 'end' : 'start'].getTime()));
+            this[target] = value;
+
+            element.valueAsNumber = value.toDateTimeLocalMilliseconds();
+        }
         
-        this.#startDateTime.addEventListener('change', () => {
-            if(this.#startDateTime.value === '')
-                return;
-
-            let start = new Date(this.#startDateTime.value);
-            start = new Date(Math.min(start.getTime(), this.end.getTime()));
-            this.start = start;
-
-            this.#startDateTime.valueAsNumber = start.toDateTimeLocalMilliseconds();
-        });
-
-        this.#endDateTime.addEventListener('change', () => {
-            if(isNaN(this.#endDateTime.value === ''))
-                return;
-
-            let end = new Date(this.#endDateTime.value);
-            end = new Date(Math.max(end.getTime(), this.start.getTime()));
-            this.end = end;
-
-            this.#endDateTime.valueAsNumber = end.toDateTimeLocalMilliseconds();
-        });
+        this.#startDateTime.addEventListener('change', () => onChange(this.#startDateTime, 'start', Math.min));
+        this.#endDateTime.addEventListener('change', () => onChange(this.#endDateTime, 'end', Math.max));
     }
 }
 

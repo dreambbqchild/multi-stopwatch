@@ -32,7 +32,7 @@ class TimeSpan {
         }        
 
         this.#start = resolveDate(start, new Date()).truncateMilliseconds();
-        this.#end = resolveDate(end, null).truncateMilliseconds();
+        this.#end = resolveDate(end, null)?.truncateMilliseconds();
     }
 
     get start() {return new Date(this.#start);}
