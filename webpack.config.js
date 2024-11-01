@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   entry: {
     main: './src/scripts/main.js',
-    report: './src/scripts/report.js',
+    report: './src/scripts/main.js',
   },
   output: {
     filename: 'main.js',

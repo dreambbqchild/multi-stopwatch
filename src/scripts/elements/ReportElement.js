@@ -1,4 +1,4 @@
-import { secondsAsTimeString, truncateMilliseconds } from "../models/TimeSpan.js";
+import { secondsAsTimeString } from "../models/TimeSpan.js";
 import ElementFactory from "../services/ElementFactory.js";
 import StopwatchService from "../services/StopwatchService.js";
 
@@ -30,7 +30,7 @@ class ReportElement extends HTMLElement {
             for(const timeSpan of stopwatch.timeSpans.getTimeSpans()) {
                 let {start, end} = timeSpan;
                 if(!end)
-                    end = truncateMilliseconds(new Date());
+                    end = (new Date()).truncateMilliseconds();
 
                 let [tr] = ElementFactory.appendElementsTo(tbody, ElementFactory.createElement('tr'));
 

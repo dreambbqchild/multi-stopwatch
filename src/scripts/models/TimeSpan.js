@@ -13,8 +13,6 @@ const secondsAsTimeString = (secs) => {
     return `${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}`;
 }
 
-const truncateMilliseconds = (d) => d === null ? null : new Date(parseInt(d.getTime() * 0.001) * 1000);
-
 class TimeSpan {
     #start
     #end
@@ -33,8 +31,8 @@ class TimeSpan {
             return defaultValue;
         }        
 
-        this.#start = truncateMilliseconds(resolveDate(start, new Date()));
-        this.#end = truncateMilliseconds(resolveDate(end, null));
+        this.#start = resolveDate(start, new Date()).truncateMilliseconds();
+        this.#end = resolveDate(end, null).truncateMilliseconds();
     }
 
     get start() {return new Date(this.#start);}
@@ -49,12 +47,12 @@ class TimeSpan {
         if(this.#end)
             return;
         
-        this.#end = truncateMilliseconds(new Date());
+        this.#end = (new Date()).truncateMilliseconds();
     }
 
     valueOf() {
-        const end = this.#end ?? truncateMilliseconds(new Date());
-        return Math.floor((end.getTime() - this.#start.getTime()) / 1000);
+        const end = this.#end ?? (new Date()).truncateMilliseconds();
+        return Math.floor((end.getTime() - this.#start.getTime()) * 0.001);
     }
 
     toString() {
@@ -122,4 +120,4 @@ class TimeSpanCollection {
     }
 }
 
-export {TimeSpan, TimeSpanCollection, secondsAsTimeString, truncateMilliseconds};
+export {TimeSpan, TimeSpanCollection, secondsAsTimeString};

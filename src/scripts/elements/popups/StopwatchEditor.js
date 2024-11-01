@@ -3,20 +3,12 @@ import ElementFactory from "../../services/ElementFactory.js";
 import GrandDispatch from "../../services/GrandDispatch.js";
 import StopwatchService, { StopwatchEventNames } from "../../services/StopwatchService.js";
 
-const formatDate = (date) => {
-    const parts = date.toLocaleDateString().split('/');
-    return `${parts[2]}-${parts[0]}-${parts[1]}`;
-}
-
-const formatTime = (date) => date.toLocaleTimeString('en-GB');
-
 const createDateTime = (label, parent, date) => {
     const [div] = ElementFactory.appendElementsTo(parent, ElementFactory.createElement('div', {classList: 'flex date-time'}))
 
     const result = ElementFactory.appendElementsTo(div, ElementFactory.beginCreateElements()
         ('span', {textContent: `${label}:\u00A0`, classList: 'flex-grow-1', style:{textAlign: 'right'}})
-        ('input', {type: 'date', value: formatDate(date)})
-        ('input', {type: 'time', value: formatTime(date)})
+        ('input', {type: 'datetime-local', step: 1, valueAsNumber: date.toDateTimeLocalMilliseconds()})
     );
 
     result.shift();
@@ -25,10 +17,8 @@ const createDateTime = (label, parent, date) => {
 }
 
 class StopwatchTimeSpan extends HTMLElement {
-    #startDate;
-    #startTime;
-    #endDate;
-    #endTime;
+    #startDateTime;
+    #endDateTime;
 
     start = null;
     end = null;  
@@ -42,8 +32,8 @@ class StopwatchTimeSpan extends HTMLElement {
             ('div', {classList: 'flex flex-grow-1 justify-content-center align-items-center', style:{minWidth: '3em'}})
         );
 
-        [this.#startDate, this.#startTime] = createDateTime('Start', leftDiv, this.start);
-        [this.#endDate, this.#endTime] = createDateTime('End', leftDiv, this.end);
+        [this.#startDateTime] = createDateTime('Start', leftDiv, this.start);
+        [this.#endDateTime] = createDateTime('End', leftDiv, this.end);
         
         const [cmdDelete] = ElementFactory.appendElementsTo(rightDiv, ElementFactory.createElement('button', {type: 'button', textContent: '🗑', classList: 'bg-light-gray'}));
 
@@ -55,30 +45,32 @@ class StopwatchTimeSpan extends HTMLElement {
             if(preparingToDelete) {
                 this.end = this.start = null;
             } else {
-                this.start = new Date(`${this.#startDate.value} ${this.#startTime.value}`);
-                this.end = new Date(`${this.#endDate.value} ${this.#endTime.value}`);
+                this.start = new Date(this.#startDateTime.valueAsNumber);
+                this.end = new Date(this.#endDateTime.valueAsNumber);
             }
         });
+        
+        this.#startDateTime.addEventListener('change', () => {
+            if(this.#startDateTime.value === '')
+                return;
 
-        for(const input of [this.#startDate, this.#startTime])
-            input.addEventListener('change', () => {
-                let start = new Date(`${this.#startDate.value} ${this.#startTime.value}`); 
-                start = new Date(Math.min(start.getTime(), this.end.getTime()));
-                this.start = start;
+            let start = new Date(this.#startDateTime.value);
+            start = new Date(Math.min(start.getTime(), this.end.getTime()));
+            this.start = start;
 
-                this.#startDate.value = formatDate(start);
-                this.#startTime.value = formatTime(start);
-            });
+            this.#startDateTime.valueAsNumber = start.toDateTimeLocalMilliseconds();
+        });
 
-        for(const input of [this.#endDate, this.#endTime])
-            input.addEventListener('change', () => {
-                let end = new Date(`${this.#endDate.value} ${this.#endTime.value}`);
-                end = new Date(Math.max(end.getTime(), this.start.getTime()));
-                this.end = end;
+        this.#endDateTime.addEventListener('change', () => {
+            if(isNaN(this.#endDateTime.value === ''))
+                return;
 
-                this.#endDate.value = formatDate(end);
-                this.#endTime.value = formatTime(end);
-            });
+            let end = new Date(this.#endDateTime.value);
+            end = new Date(Math.max(end.getTime(), this.start.getTime()));
+            this.end = end;
+
+            this.#endDateTime.valueAsNumber = end.toDateTimeLocalMilliseconds();
+        });
     }
 }
 
